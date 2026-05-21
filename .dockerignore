@@ -1,0 +1,36 @@
+# Build artifacts
+bin/
+*.exe
+*.test
+*.out
+/tmp/
+
+# Dependencies
+vendor/
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Docs
+*.md
+!README.md
+
+# CI/CD
+.github/
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Env files (rely on runtime injection)
+.env
+.env.*
+
+# Frontend (built separately)
+web/
