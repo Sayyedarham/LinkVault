@@ -264,7 +264,7 @@ The `aws/` directory contains infrastructure-as-code and deployment scripts for 
 
 ## Screenshots
 
-*Coming soon — add screenshots of the React frontend here.*
+*Coming soon*
 
 ---
 
