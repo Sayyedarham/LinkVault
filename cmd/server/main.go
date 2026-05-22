@@ -13,7 +13,7 @@ func main() {
 	
 	dynamoClient := db.NewDynamoClient(cfg.AWSRegion, cfg.DynamoEndpoint)
 	
-	r := router.New(dynamoClient, cfg.TableName)
+	r := router.New(dynamoClient, cfg.TableName, cfg.JWTSecret)
 	
 	log.Printf("Starting server on %s", cfg.Port)
 	if err := r.Run(cfg.Port); err != nil {

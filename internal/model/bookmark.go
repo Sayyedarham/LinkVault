@@ -8,7 +8,7 @@ type Bookmark struct {
 	ID        string    `json:"id" dynamodbav:"id"`
 	UserID    string    `json:"user_id" dynamodbav:"user_id"`
 	URL       string    `json:"url" dynamodbav:"url" binding:"required,url"`
-	Title     string    `json:"title" dynamodbav:"title" binding:"required"`
+	Title     string    `json:"title" dynamodbav:"title"`
 	Tags      []string  `json:"tags" dynamodbav:"tags"`
 	CreatedAt time.Time `json:"created_at" dynamodbav:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" dynamodbav:"updated_at"`
@@ -16,6 +16,6 @@ type Bookmark struct {
 
 type CreateBookmarkRequest struct {
 	URL   string   `json:"url" binding:"required,url"`
-	Title string   `json:"title" binding:"required"`
+	Title string   `json:"title"`
 	Tags  []string `json:"tags"`
 }

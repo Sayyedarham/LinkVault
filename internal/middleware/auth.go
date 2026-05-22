@@ -5,28 +5,33 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-// AuthMiddleware — JWT stub (Day 2: always passes, sets demo-user)
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.GetHeader("Authorization")
-		
-		// TEMP: accept any Bearer token, set demo-user
-		if strings.HasPrefix(auth, "Bearer ") {
-			c.Set("user_id", "demo-user")
-			c.Next()
+		if !strings.HasPrefix(auth, "Bearer ") {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
+			c.Abort()
 			return
 		}
 
-		// No token = 401
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
-		c.Abort()
+		tokenStr := strings.TrimPrefix(auth, "Bearer ")
+		token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, jwt.ErrSignatureInvalid
+			}
+			return []byte(secret), nil
+		})
+		if err != nil || !token.Valid {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+			c.Abort()
+			return
+		}
+
+		claims := token.Claims.(jwt.MapClaims)
+		c.Set("user_id", claims["sub"].(string))
+		c.Next()
 	}
 }
-
-// TODO Day 3: Replace with real JWT validation:
-// - Parse JWT from Authorization header
-// - Verify signature (RS256/HS256)
-// - Extract user_id from claims
-// - Set c.Set("user_id", claims.UserID)

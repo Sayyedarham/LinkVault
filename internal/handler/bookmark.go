@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/hphp/linkvault/internal/scraper"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
@@ -28,6 +29,9 @@ func (h *BookmarkHandler) Create(c *gin.Context) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+	if req.Title == "" {
+		req.Title = scraper.FetchTitle(c.Request.Context(), req.URL)
 	}
 
 	userID := c.GetString("user_id") // From JWT middleware (stub for now)

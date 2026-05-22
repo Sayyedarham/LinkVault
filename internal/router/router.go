@@ -7,7 +7,7 @@ import (
 	"github.com/hphp/linkvault/internal/middleware"
 )
 
-func New(db *dynamodb.Client, tableName string) *gin.Engine {
+func New(db *dynamodb.Client, tableName, jwtSecret string) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(func(c *gin.Context) {
@@ -25,10 +25,13 @@ func New(db *dynamodb.Client, tableName string) *gin.Engine {
 	{
 		v1.GET("/health", handler.Health)
 
-		// Bookmarks (protected)
+		authHandler := handler.NewAuthHandler(db, tableName, jwtSecret)
+		v1.POST("/auth/register", authHandler.Register)
+		v1.POST("/auth/login", authHandler.Login)
+
 		bookmarkHandler := handler.NewBookmarkHandler(db, tableName)
 		bookmarks := v1.Group("/bookmarks")
-		bookmarks.Use(middleware.AuthMiddleware())
+		bookmarks.Use(middleware.AuthMiddleware(jwtSecret))
 		{
 			bookmarks.POST("", bookmarkHandler.Create)
 			bookmarks.GET("", bookmarkHandler.List)

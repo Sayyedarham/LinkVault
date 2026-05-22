@@ -1,14 +1,13 @@
 package config
 
-import (
-	"os"
-)
+import "os"
 
 type Config struct {
 	Port           string
 	AWSRegion      string
 	DynamoEndpoint string
 	TableName      string
+	JWTSecret      string
 }
 
 func Load() *Config {
@@ -17,6 +16,7 @@ func Load() *Config {
 		AWSRegion:      getEnv("AWS_REGION", "us-east-1"),
 		DynamoEndpoint: getEnv("DYNAMO_ENDPOINT", "http://dynamodb-local:8000"),
 		TableName:      getEnv("TABLE_NAME", "LinkTable"),
+		JWTSecret:      getEnv("JWT_SECRET", "dev-secret-change-in-prod"),
 	}
 }
 
